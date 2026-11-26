@@ -1,0 +1,52 @@
+name: Publish Iran Lite preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/publish-iran-lite-preview.yml'
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: publish-iran-lite-preview
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'aghajani82/v2rayNG' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SOURCE_SHA: '3be67e990f17acc11965de2da0fa84822e6a4f55'
+      RUN_ID: '45843210548'
+      RELEASE_TAG: 'iran-lite-android-preview.1'
+      ARTIFACT: 'v2rayNG-Aghajani-Iran-Lite-arm64-preview'
+      ASSET: 'v2rayNG-Aghajani-Iran-Lite-arm64-preview.apk'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Publish the verified preview artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Preview release already exists."
+            exit 0
+          fi
+          git merge-base --is-ancestor "$SOURCE_SHA" HEAD
+          test "$(gh run view "$RUN_ID" --json conclusion --jq .conclusion)" = success
+          gh run download "$RUN_ID" --name "$ARTIFACT" --dir package
+          cd package
+          sha256sum --strict --check "$ASSET.sha256"
+          gh release create "$RELEASE_TAG" "$ASSET" "$ASSET.sha256" \
+            --target "$SOURCE_SHA" --title 'Iran Lite Android Preview 1' \
+            --prerelease --latest=false \
+            --notes 'Android ARM64 device-test APK, built with a debug signing key and a separate app ID. Iran Lite routing is enabled for fresh configurations. Built by Actions run 45843210548.'
