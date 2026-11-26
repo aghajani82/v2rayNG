@@ -17,7 +17,7 @@ android {
         applicationId = "com.v2ray.ang.aghajani"
         minSdk = 24
         targetSdk = 37
-        versionCode = 762
+        versionCode = 763
         versionName = "2.4.2"
 
         val abiFilterList = (properties["ABI_FILTERS"] as? String)?.split(';')
@@ -45,6 +45,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".preview"
+            versionNameSuffix = "-iran-lite.2"
         }
         release {
             isMinifyEnabled = false
