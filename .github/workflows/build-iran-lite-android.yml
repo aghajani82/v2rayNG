@@ -62,7 +62,7 @@ jobs:
           "$tools/apksigner" verify "$apk"
           "$tools/aapt" dump badging "$apk" | grep -F "package: name='com.v2ray.ang.aghajani.preview'"
           unzip -p "$apk" assets/custom_routing_iran_lite.bin > rules.gz
-          echo 'c393ba343c7cbf82caf9f845e7b62d8528c9986cc2eb938e086cdd2e49476000  rules.gz' | sha256sum --check
+          echo '96cad836df87f962382bad888f1446acbeaa322b295c153b86a4138080faba55  rules.gz' | sha256sum --check
           for lib in libgojni.so libhev-socks5-tunnel.so; do
             unzip -Z1 "$apk" "lib/arm64-v8a/$lib"
           done
