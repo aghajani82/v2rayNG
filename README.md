@@ -2,7 +2,7 @@
 
 ## دانلود Aghajani Edition – Iran Lite
 
-**[دانلود APK اندروید ARM64](https://github.com/aghajani82/v2rayNG/releases/download/iran-lite-android-preview.1/v2rayNG-Aghajani-Iran-Lite-arm64-preview.apk)** · [صفحهٔ انتشار](https://github.com/aghajani82/v2rayNG/releases/tag/iran-lite-android-preview.1) · [نسخهٔ ویندوز](https://github.com/aghajani82/v2rayN#readme)
+**[دانلود APK اندروید ARM64](https://github.com/aghajani82/v2rayNG/releases/download/iran-lite-android-preview.2/v2rayNG-Aghajani-Iran-Lite-arm64-preview.apk)** · [صفحهٔ انتشار](https://github.com/aghajani82/v2rayNG/releases/tag/iran-lite-android-preview.2) · [نسخهٔ ویندوز](https://github.com/aghajani82/v2rayN#readme)
 
 پس از دانلود APK، لینک ساب رو در برنامه وارد کن و VPN رو روشن کن. این بیلد آزمایشیه و کنار v2rayNG اصلی نصب می‌شه. در نصب تازه، قواعد Iran Lite به‌صورت پیش‌فرض فعالن.
 
