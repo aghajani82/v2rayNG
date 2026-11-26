@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.v2ray.ang"
+        applicationId = "com.v2ray.ang.aghajani"
         minSdk = 24
         targetSdk = 37
         versionCode = 762
@@ -43,6 +43,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".preview"
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(

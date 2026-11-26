@@ -1,0 +1,77 @@
+name: Build Iran Lite for Android
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+    paths:
+      - '.github/workflows/build-iran-lite-android.yml'
+      - 'V2rayNG/app/**'
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-java@v6.3.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v4
+        with:
+          log-accepted-android-sdk-licenses: false
+          cmdline-tools-version: '14742923'
+          packages: 'platforms;android-37.1 build-tools;37.0.0 platform-tools'
+
+      - name: Set up native toolchain
+        run: |
+          sdkmanager --install 'ndk;30.0.16248370'
+          echo "NDK_HOME=$ANDROID_HOME/ndk/30.0.16248370" >> "$GITHUB_ENV"
+          sed -i '/^    namespace =/a\    ndkVersion = "30.0.16248370"' V2rayNG/app/build.gradle.kts
+
+      - name: Prepare native libraries
+        run: |
+          bash compile-hevtun.sh
+          cp -r libs V2rayNG/app/
+          aar=V2rayNG/app/libs/libv2ray.aar
+          curl --fail --location --retry 3 -o "$aar" \
+            https://github.com/2dust/AndroidLibXrayLite/releases/download/v26.11.26/libv2ray.aar
+          echo "7d428665a2c56f6f9beefe3b18e785af1100cc0dc1da39fbfc0691bff7526859  $aar" | sha256sum --check
+
+      - name: Build debug-signed Android ARM64 APK
+        working-directory: V2rayNG
+        run: bash gradlew assemblePlaystoreDebug -PABI_FILTERS=arm64-v8a --stacktrace
+
+      - name: Verify and stage APK
+        run: |
+          mapfile -t apks < <(find V2rayNG/app/build/outputs/apk/playstore/debug -name '*arm64-v8a.apk')
+          test "${#apks[@]}" -eq 1
+          mkdir -p dist
+          cd dist
+          apk=v2rayNG-Aghajani-Iran-Lite-arm64-preview.apk
+          cp "../${apks[0]}" "$apk"
+          tools="$ANDROID_HOME/build-tools/37.0.0"
+          "$tools/apksigner" verify "$apk"
+          "$tools/aapt" dump badging "$apk" | grep -F "package: name='com.v2ray.ang.aghajani.preview'"
+          unzip -p "$apk" assets/custom_routing_iran_lite.gz > rules.gz
+          echo 'c393ba343c7cbf82caf9f845e7b62d8528c9986cc2eb938e086cdd2e49476000  rules.gz' | sha256sum --check
+          for lib in libgojni.so libhev-socks5-tunnel.so; do
+            unzip -Z1 "$apk" "lib/arm64-v8a/$lib"
+          done
+          sha256sum "$apk" > "$apk.sha256"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: v2rayNG-Aghajani-Iran-Lite-arm64-preview
+          path: |
+            dist/*.apk
+            dist/*.sha256
+          if-no-files-found: error

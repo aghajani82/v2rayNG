@@ -31,6 +31,8 @@ import com.v2ray.ang.util.LogUtil
 import com.v2ray.ang.util.Utils
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import java.util.zip.GZIPInputStream
 import kotlin.random.Random
 
 object SettingsManager {
@@ -54,7 +56,12 @@ object SettingsManager {
     private fun initRoutingRulesets(context: Context) {
         val exist = MmkvManager.decodeRoutingRulesets()
         if (exist.isNullOrEmpty()) {
-            val rulesetList = getPresetRoutingRulesets(context)
+            val iranLite = getPresetRoutingRulesets(context, RoutingType.IRAN_LITE)
+            val rulesetList = iranLite ?: getPresetRoutingRulesets(context, RoutingType.WHITE)
+            if (iranLite != null && MmkvManager.decodeSettingsString(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY) == null) {
+                MmkvManager.encodeSettings(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY, "IPOnDemand")
+            }
+            rulesetList?.ensureUniqueIds()
             MmkvManager.encodeRoutingRulesets(rulesetList)
         }
     }
@@ -65,13 +72,24 @@ object SettingsManager {
      * @param type The routing preset type.
      * @return A mutable list of RulesetItem.
      */
-    private fun getPresetRoutingRulesets(context: Context, type: RoutingType = RoutingType.WHITE): MutableList<RulesetItem>? {
-        val assets = Utils.readTextFromAssets(context, type.fileName)
+    private fun getPresetRoutingRulesets(context: Context, type: RoutingType): MutableList<RulesetItem>? {
+        val assets = if (type == RoutingType.IRAN_LITE) {
+            try {
+                context.assets.open(type.fileName).use { input ->
+                    GZIPInputStream(input).bufferedReader().use { it.readText() }
+                }
+            } catch (e: IOException) {
+                LogUtil.e(ANG_PACKAGE, "Failed to read bundled Iran Lite routing rules", e)
+                return null
+            }
+        } else {
+            Utils.readTextFromAssets(context, type.fileName)
+        }
         if (TextUtils.isEmpty(assets)) {
             return null
         }
 
-        return JsonUtil.fromJsonSafe(assets, Array<RulesetItem>::class.java)?.toMutableList()
+        return JsonUtil.fromJsonSafe(assets, Array<RulesetItem>::class.java)?.toMutableList()?.takeIf { it.isNotEmpty() }
     }
 
     /**
@@ -82,6 +100,9 @@ object SettingsManager {
     fun resetRoutingRulesetsFromPresets(context: Context, type: RoutingType) {
         val rulesetList = getPresetRoutingRulesets(context, type) ?: return
         resetRoutingRulesetsCommon(rulesetList)
+        if (type == RoutingType.IRAN_LITE) {
+            MmkvManager.encodeSettings(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY, "IPOnDemand")
+        }
     }
 
     /**

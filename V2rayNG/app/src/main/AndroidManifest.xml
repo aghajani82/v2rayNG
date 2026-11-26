@@ -46,7 +46,7 @@
         android:allowBackup="true"
         android:banner="@mipmap/ic_banner"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/aghajani_app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppThemeDayNight.NoActionBar"
@@ -230,7 +230,7 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse"
-            android:label="@string/app_name"
+            android:label="@string/aghajani_app_name"
             android:permission="android.permission.BIND_VPN_SERVICE"
             android:process=":daemon"
             tools:ignore="VpnServicePolicy">
@@ -249,7 +249,7 @@
             android:name=".service.CoreProxyOnlyService"
             android:exported="false"
             android:foregroundServiceType="specialUse"
-            android:label="@string/app_name"
+            android:label="@string/aghajani_app_name"
             android:process=":daemon">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
@@ -260,7 +260,7 @@
             android:name=".service.CoreRootService"
             android:exported="false"
             android:foregroundServiceType="specialUse"
-            android:label="@string/app_name"
+            android:label="@string/aghajani_app_name"
             android:process=":daemon">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
