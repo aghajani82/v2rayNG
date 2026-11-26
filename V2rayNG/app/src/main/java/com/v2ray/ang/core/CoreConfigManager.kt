@@ -1217,6 +1217,32 @@ object CoreConfigManager {
                 ?: "AsIs"
 
         val rulesetItems = MmkvManager.decodeRoutingRulesets()
+        if (rulesetItems?.any { it.enabled && it.outboundTag == AppConfig.TAG_DIRECT && it.remarks == "Iran domains" } == true) {
+            appendRoutingUserRule(
+                configContext,
+                RulesetItem(
+                    outboundTag = AppConfig.TAG_PROXY,
+                    domain = listOf(
+                        "domain:chatgpt.com",
+                        "domain:openai.com",
+                        "domain:oaistatic.com",
+                        "domain:oaiusercontent.com",
+                        "domain:oaistatsig.com",
+                        "domain:openaimerge.com",
+                        "domain:chatgpt-team.site",
+                        "full:challenges.cloudflare.com",
+                        "full:cdn.workos.com",
+                        "full:forwarder.workos.com",
+                        "full:frontend-apps-multi-region.workos.com",
+                        "full:images.workoscdn.com",
+                        "full:setup.workos.com",
+                        "full:workos.imgix.net",
+                    ),
+                ),
+                v2rayConfig,
+                policyGroupBalancerTags,
+            )
+        }
         rulesetItems?.forEach { key ->
             appendRoutingUserRule(configContext, key, v2rayConfig, policyGroupBalancerTags)
         }

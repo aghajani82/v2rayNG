@@ -8,7 +8,9 @@ Iran Lite**.
 The preset contains the same Iran domain and IP lists as the Windows edition.
 The APK embeds the exact compressed rules from [the v2rayN fork](https://github.com/aghajani82/v2rayN/pull/1)
 and uses Xray's IPOnDemand strategy. ipmyp.ir and other Iranian destinations
-go direct. Other destinations use the selected proxy. The bundled lists come from
+go direct. ChatGPT and its connection dependencies use the selected proxy
+before Iran destination rules are evaluated. Other destinations also use the
+selected proxy. The bundled lists come from
 [Chocolate4U/Iran-v2ray-rules](https://github.com/Chocolate4U/Iran-v2ray-rules) (GPLv3)
 and [bootmortis/iran-hosted-domains](https://github.com/bootmortis/iran-hosted-domains) (MIT).
 
