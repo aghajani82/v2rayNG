@@ -23,9 +23,9 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      SOURCE_SHA: '3be67e990f17acc11965de2da0fa84822e6a4f55'
-      RUN_ID: '45843210548'
-      RELEASE_TAG: 'iran-lite-android-preview.1'
+      SOURCE_SHA: 'd5e866745e46e87b086722e7330165c23db6489f'
+      RUN_ID: '45861729369'
+      RELEASE_TAG: 'iran-lite-android-preview.2'
       ARTIFACT: 'v2rayNG-Aghajani-Iran-Lite-arm64-preview'
       ASSET: 'v2rayNG-Aghajani-Iran-Lite-arm64-preview.apk'
     steps:
@@ -47,6 +47,6 @@ jobs:
           cd package
           sha256sum --strict --check "$ASSET.sha256"
           gh release create "$RELEASE_TAG" "$ASSET" "$ASSET.sha256" \
-            --target "$SOURCE_SHA" --title 'Iran Lite Android Preview 1' \
+            --target "$SOURCE_SHA" --title 'Iran Lite Android Preview 2' \
             --prerelease --latest=false \
-            --notes 'Android ARM64 device-test APK, built with a debug signing key and a separate app ID. Iran Lite routing is enabled for fresh configurations. Built by Actions run 45843210548.'
+            --notes 'Android ARM64 device-test APK, built with a debug signing key and a separate app ID. ChatGPT and its connection dependencies use the proxy before Iran Lite direct rules. Built by Actions run 45861729369.'
