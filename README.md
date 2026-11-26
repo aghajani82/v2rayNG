@@ -1,5 +1,13 @@
 # v2rayNG
 
+## دانلود Aghajani Edition – Iran Lite
+
+**[دانلود APK اندروید ARM64](https://github.com/aghajani82/v2rayNG/releases/download/iran-lite-android-preview.1/v2rayNG-Aghajani-Iran-Lite-arm64-preview.apk)** · [صفحهٔ انتشار](https://github.com/aghajani82/v2rayNG/releases/tag/iran-lite-android-preview.1) · [نسخهٔ ویندوز](https://github.com/aghajani82/v2rayN#readme)
+
+پس از دانلود APK، لینک ساب رو در برنامه وارد کن و VPN رو روشن کن. این بیلد آزمایشیه و کنار v2rayNG اصلی نصب می‌شه. در نصب تازه، قواعد Iran Lite به‌صورت پیش‌فرض فعالن.
+
+---
+
 A V2Ray client for Android, support [Xray core](https://github.com/XTLS/Xray-core) and [v2fly core](https://github.com/v2fly/v2ray-core)
 
 [![API](https://img.shields.io/badge/API-24%2B-yellow.svg?style=flat)](https://developer.android.com/about/versions/lollipop)
