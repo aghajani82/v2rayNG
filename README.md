@@ -4,6 +4,8 @@
 
 **[دانلود APK اندروید ARM64](https://github.com/aghajani82/v2rayNG/releases/download/iran-lite-android-preview.3/v2rayNG-Aghajani-Iran-Lite-arm64-preview.apk)** · [صفحهٔ انتشار](https://github.com/aghajani82/v2rayNG/releases/tag/iran-lite-android-preview.3) · [نسخهٔ ویندوز](https://github.com/aghajani82/v2rayN#readme)
 
+**اندروید ۵ به بالا · نسخهٔ سازگاری** · [APK برای ARM سی‌ودوبیتی](https://github.com/aghajani82/v2rayNG/releases/download/iran-lite-android-legacy-preview.1/v2rayNG-Aghajani-Iran-Lite-legacy-armeabi-v7a.apk) · [APK برای ARM شصت‌وچهاربیتی](https://github.com/aghajani82/v2rayNG/releases/download/iran-lite-android-legacy-preview.1/v2rayNG-Aghajani-Iran-Lite-legacy-arm64-v8a.apk) · [راهنما و پیش‌نیازها](https://github.com/aghajani82/v2rayNG/blob/iran-lite-android-legacy/IRAN-LITE-LEGACY.md)
+
 [راهنمای به‌روزرسانی قوانین Iran Lite بدون نصب دوباره](https://github.com/aghajani82/clashmi/tree/main/iran-lite#بهروزرسانی-قوانین-در-v2rayn-و-v2rayng)
 
 پس از دانلود APK، لینک ساب رو در برنامه وارد کن و VPN رو روشن کن. این بیلد آزمایشیه و کنار v2rayNG اصلی نصب می‌شه. در نصب تازه، قواعد Iran Lite به‌صورت پیش‌فرض فعالن.
