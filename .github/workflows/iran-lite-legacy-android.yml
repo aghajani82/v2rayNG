@@ -1,0 +1,103 @@
+name: Build Iran Lite for older Android
+on:
+  push:
+    branches: [iran-lite-android-legacy]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - uses: actions/setup-java@v6.3.0
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: AndroidLibXrayLite/go.mod
+          cache: false
+      - uses: android-actions/setup-android@v4
+        with:
+          log-accepted-android-sdk-licenses: false
+          cmdline-tools-version: '14742923'
+          packages: 'platforms;android-35 build-tools;35.0.0 platform-tools'
+      - name: Prepare native libraries and shared routing assets
+        run: |
+          set -euo pipefail
+          sdkmanager --install 'ndk;28.2.13676358'
+          export NDK_HOME="$ANDROID_HOME/ndk/28.2.13676358"
+          bash compile-tun2socks.sh
+          bash libhysteria2.sh
+          cp -r libs hysteria/libs V2rayNG/app/
+          curl --fail --location --retry 3 \
+            https://github.com/2dust/AndroidLibXrayLite/releases/download/v25.10.15/libv2ray.aar \
+            -o V2rayNG/app/libs/libv2ray.aar
+          echo 'b2fbc1edf70ed9432a6685885b95e2c7804779d81bf97db0c9746b52c26a3374  V2rayNG/app/libs/libv2ray.aar' | sha256sum --check
+          cd V2rayNG/app/src/main/assets
+          base='https://raw.githubusercontent.com/aghajani82/clashmi/18ede6ffa12a7a0a2a745c5422d3a9adce6da937/iran-lite'
+          for name in iran-lite-domains.dat iran-lite-ips.dat; do
+            curl --fail --location --retry 3 "$base/$name" -o "$name"
+          done
+          sha256sum --check <<'HASHES'
+          aee21821086fc04623f70ff9aa172fc32cad2949240b911172c49e8c55dd7f  iran-lite-domains.dat
+          e33afbf177dcfcb6127e4b4c969f0c447ddcfb85417f47cc0a001bd4cd4c1495  iran-lite-ips.dat
+          HASHES
+      - name: Build Android 5+ APKs
+        working-directory: V2rayNG
+        run: bash gradlew assemblePlaystoreDebug '-PABI_FILTERS=armeabi-v7a;arm64-v8a' --stacktrace
+      - name: Verify APKs and stage downloads
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          tools="$ANDROID_HOME/build-tools/35.0.0"
+          for abi in armeabi-v7a arm64-v8a; do
+            mapfile -t apks < <(find V2rayNG/app/build/outputs/apk/playstore/debug -name "*$abi.apk")
+            test "${#apks[@]}" -eq 1
+            name="v2rayNG-Aghajani-Iran-Lite-legacy-$abi.apk"
+            apk="dist/$name"
+            cp "${apks[0]}" "$apk"
+            "$tools/apksigner" verify --min-sdk-version 21 "$apk"
+            "$tools/aapt" dump badging "$apk" > "$RUNNER_TEMP/apk-info.txt"
+            grep -F "package: name='com.v2ray.ang.aghajani.legacy'" "$RUNNER_TEMP/apk-info.txt"
+            grep -Fx "sdkVersion:'21'" "$RUNNER_TEMP/apk-info.txt"
+            grep -Fx "native-code: '$abi'" "$RUNNER_TEMP/apk-info.txt"
+            for lib in libgojni.so libhev-socks5-tunnel.so libhysteria2.so; do
+              unzip -Z1 "$apk" "lib/$abi/$lib"
+            done
+            for asset in custom_routing_iran_lite iran-lite-domains.dat iran-lite-ips.dat; do
+              unzip -p "$apk" "assets/$asset" | cmp - "V2rayNG/app/src/main/assets/$asset"
+            done
+            (cd dist && sha256sum "$name" > "$name.sha256")
+          done
+      - uses: actions/upload-artifact@v7
+        with:
+          name: iran-lite-android-legacy
+          path: dist/*
+          if-no-files-found: error
+  publish:
+    needs: build
+    if: github.repository == 'aghajani82/v2rayNG' && github.ref == 'refs/heads/iran-lite-android-legacy'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: iran-lite-android-legacy
+          path: dist
+      - name: Publish legacy preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          cd dist
+          for checksum in *.sha256; do sha256sum --check "$checksum"; done
+          gh release create iran-lite-android-legacy-preview.1 ./* --target "$SOURCE_SHA" \
+            --title 'Iran Lite for older Android Preview 1' --prerelease --latest=false \
+            --notes 'v2rayNG 1.10.25 and Xray 25.10.15 with the shared Iran Lite routes, including ChatGPT proxy exceptions. APKs for Android API 21+ in ARM 32-bit and ARM 64-bit variants. The package is debug-signed and has a separate app ID. Minimum SDK and APK contents were verified in CI. On-device Android 5 testing is pending.'

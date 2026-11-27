@@ -1,0 +1,45 @@
+[
+  {
+    "remarks": "ChatGPT",
+    "domain": [
+      "domain:chatgpt.com",
+      "domain:openai.com",
+      "domain:oaistatic.com",
+      "domain:oaiusercontent.com",
+      "domain:oaistatsig.com",
+      "domain:openaimerge.com",
+      "domain:chatgpt-team.site",
+      "full:challenges.cloudflare.com",
+      "full:cdn.workos.com",
+      "full:forwarder.workos.com",
+      "full:frontend-apps-multi-region.workos.com",
+      "full:images.workoscdn.com",
+      "full:setup.workos.com",
+      "full:workos.imgix.net"
+    ],
+    "outboundTag": "proxy",
+    "enabled": true
+  },
+  {
+    "remarks": "Iran domains",
+    "outboundTag": "direct",
+    "domain": [
+      "ext:iran-lite-domains.dat:ir"
+    ],
+    "enabled": true
+  },
+  {
+    "remarks": "Iran and private IP ranges",
+    "outboundTag": "direct",
+    "ip": [
+      "ext:iran-lite-ips.dat:ir"
+    ],
+    "enabled": true
+  },
+  {
+    "remarks": "Other destinations",
+    "outboundTag": "proxy",
+    "port": "0-65535",
+    "enabled": true
+  }
+]

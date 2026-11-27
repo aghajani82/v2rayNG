@@ -38,6 +38,7 @@ class AngApplication : MultiDexApplication() {
         // Initialize WorkManager with the custom configuration
         WorkManager.initialize(this, workManagerConfiguration)
 
+        SettingsManager.initAssets(this, assets)
         SettingsManager.initRoutingRulesets(this)
 
         es.dmoral.toasty.Toasty.Config.getInstance()

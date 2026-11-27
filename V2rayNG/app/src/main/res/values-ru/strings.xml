@@ -371,6 +371,7 @@
         <item>Чёрный список Китая</item>
         <item>Общие</item>
         <item>Белый список Ирана</item>
+        <item>Iran Lite</item>
     </string-array>
 
     <string-array name="vpn_bypass_lan">

@@ -46,7 +46,7 @@ class UserAssetActivity : BaseActivity() {
     private val binding by lazy { ActivityUserAssetBinding.inflate(layoutInflater) }
 
     val extDir by lazy { File(Utils.userAssetPath(this)) }
-    val builtInGeoFiles = arrayOf("geosite.dat", "geoip.dat")
+    val builtInGeoFiles = listOf("geosite.dat", "geoip.dat") + SettingsManager.iranLiteAssets
 
     private val requestStoragePermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -285,7 +285,11 @@ class UserAssetActivity : BaseActivity() {
                 list.add(
                     Utils.getUuid() to AssetUrlItem(
                         it,
-                        String.format(AppConfig.GITHUB_DOWNLOAD_URL, getGeoFilesSources()).concatUrl(it),
+                        if (it in SettingsManager.iranLiteAssets) {
+                            "https://raw.githubusercontent.com/aghajani82/clashmi/main/iran-lite/$it"
+                        } else {
+                            String.format(AppConfig.GITHUB_DOWNLOAD_URL, getGeoFilesSources()).concatUrl(it)
+                        },
                         locked = true
                     )
                 )

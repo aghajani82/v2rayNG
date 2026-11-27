@@ -7,13 +7,14 @@ plugins {
 android {
     namespace = "com.v2ray.ang"
     compileSdk = 35
+    ndkVersion = "28.2.13676358"
 
     defaultConfig {
-        applicationId = "com.v2ray.ang"
+        applicationId = "com.v2ray.ang.aghajani.legacy"
         minSdk = 21
         targetSdk = 35
         versionCode = 676
-        versionName = "1.10.25"
+        versionName = "1.10.25-iran-lite-legacy.1"
         multiDexEnabled = true
 
         val abiFilterList = (properties["ABI_FILTERS"] as? String)?.split(';')

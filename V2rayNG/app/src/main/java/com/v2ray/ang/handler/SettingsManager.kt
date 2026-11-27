@@ -28,6 +28,8 @@ import java.util.Locale
 
 object SettingsManager {
 
+    val iranLiteAssets = listOf("iran-lite-domains.dat", "iran-lite-ips.dat")
+
     /**
      * Initialize routing rulesets.
      * @param context The application context.
@@ -35,7 +37,10 @@ object SettingsManager {
     fun initRoutingRulesets(context: Context) {
         val exist = MmkvManager.decodeRoutingRulesets()
         if (exist.isNullOrEmpty()) {
-            val rulesetList = getPresetRoutingRulesets(context)
+            val rulesetList = getPresetRoutingRulesets(context, RoutingType.IRAN_LITE.ordinal)
+            if (rulesetList != null && MmkvManager.decodeSettingsString(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY) == null) {
+                MmkvManager.encodeSettings(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY, "IPOnDemand")
+            }
             MmkvManager.encodeRoutingRulesets(rulesetList)
         }
     }
@@ -64,6 +69,9 @@ object SettingsManager {
     fun resetRoutingRulesetsFromPresets(context: Context, index: Int) {
         val rulesetList = getPresetRoutingRulesets(context, index) ?: return
         resetRoutingRulesetsCommon(rulesetList)
+        if (index == RoutingType.IRAN_LITE.ordinal) {
+            MmkvManager.encodeSettings(AppConfig.PREF_ROUTING_DOMAIN_STRATEGY, "IPOnDemand")
+        }
     }
 
     /**
@@ -255,7 +263,7 @@ object SettingsManager {
         val extFolder = Utils.userAssetPath(context)
 
         try {
-            val geo = arrayOf("geosite.dat", "geoip.dat")
+            val geo = listOf("geosite.dat", "geoip.dat") + iranLiteAssets
             assets.list("")
                 ?.filter { geo.contains(it) }
                 ?.filter { !File(extFolder, it).exists() }

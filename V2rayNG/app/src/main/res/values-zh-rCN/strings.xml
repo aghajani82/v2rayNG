@@ -363,6 +363,7 @@
         <item>黑名单 (Blacklist)</item>
         <item>全局 (Global)</item>
         <item>伊朗 (Iran)</item>
+        <item>Iran Lite</item>
     </string-array>
 
     <string-array name="vpn_bypass_lan">
